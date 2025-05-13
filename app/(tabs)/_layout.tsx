@@ -1,9 +1,12 @@
 import { COLORS } from "@/constants/theme";
+import { useKeyboard } from "@/hooks/useKeyboard";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 
 const TabLayout = () => {
+  const keyboardVisible = useKeyboard();
+
   return (
     <Tabs
       screenOptions={{
@@ -18,6 +21,7 @@ const TabLayout = () => {
           elevation: 0,
           height: 50,
           paddingBottom: 8,
+          display: keyboardVisible ? "none" : "flex",
         },
       }}
     >

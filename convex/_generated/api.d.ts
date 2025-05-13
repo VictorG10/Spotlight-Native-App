@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as https from "../https.js";
+import type * as posts from "../posts.js";
 import type * as users from "../users.js";
 
 /**
@@ -26,6 +27,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   https: typeof https;
+  posts: typeof posts;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
