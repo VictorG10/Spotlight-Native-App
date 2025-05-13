@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await ctx.auth.getUserIdentity();
@@ -7,6 +7,8 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
   return await ctx.storage.generateUploadUrl();
 });
+
+// 2:37:43
 
 export const createPost = mutation({
   args: {
@@ -46,5 +48,19 @@ export const createPost = mutation({
     });
 
     return postId;
+  },
+});
+
+export const getFeedPosts = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const currentUser = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!currentUser) throw new Error("User not found");
   },
 });
