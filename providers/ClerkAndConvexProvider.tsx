@@ -1,6 +1,6 @@
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { ConvexReactClient } from "convex/react";
+import { Authenticated, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 
 const convex = new ConvexReactClient(
@@ -26,7 +26,9 @@ const ClerkAndConvexProvider = ({
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <ClerkLoaded>{children}</ClerkLoaded>
+        <ClerkLoaded>
+          <Authenticated>{children}</Authenticated>{" "}
+        </ClerkLoaded>
       </ConvexProviderWithClerk>
     </ClerkProvider>
   );

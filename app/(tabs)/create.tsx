@@ -27,6 +27,7 @@ const CreateScreen = () => {
   const [caption, setCaption] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isSharing, setIsSharing] = useState(false);
+  const [userIdReady, setUserIdReady] = useState(false);
 
   const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
   const createPost = useMutation(api.posts.createPost);
@@ -37,7 +38,7 @@ const CreateScreen = () => {
       if (!user) return;
 
       try {
-        const id = await createUser({
+        await createUser({
           clerkId: user.id,
           username:
             user.username || user.emailAddresses[0]?.emailAddress || "unknown",
@@ -46,7 +47,7 @@ const CreateScreen = () => {
           image: user.imageUrl || "",
           bio: "",
         });
-        console.log("User created or already exists:", id);
+        setUserIdReady(true); // ✅ allow share only when user is registered
       } catch (error) {
         console.error("Failed to create user:", error);
       }
@@ -54,53 +55,6 @@ const CreateScreen = () => {
 
     registerUser();
   }, [user]);
-
-  // useEffect(() => {
-  //   const registerUser = async () => {
-  //     if (!user) return;
-
-  //     try {
-  //       await createUser({
-  //         clerkId: user.id,
-  //         username:
-  //           user.username || user.emailAddresses[0]?.emailAddress || "unknown",
-  //         fullname: user.fullName || "Unnamed",
-  //         email: user.emailAddresses[0]?.emailAddress || "unknown@example.com",
-  //         image: user.imageUrl || "",
-  //         bio: "",
-  //       });
-  //     } catch (err) {
-  //       console.error("Failed to create user:", err);
-  //     }
-  //   };
-
-  //   registerUser();
-  // }, [user]);
-
-  // useEffect(() => {
-  //   const tryCreateUser = async () => {
-  //     if (user) {
-  //       try {
-  //         await createUser({
-  //           clerkId: user.id,
-  //           username:
-  //             user.username ||
-  //             user.emailAddresses[0]?.emailAddress ||
-  //             "unknown",
-  //           fullname: user.fullName || "Unnamed User",
-  //           email:
-  //             user.emailAddresses[0]?.emailAddress || "no-email@example.com",
-  //           image: user.imageUrl || "",
-  //           bio: "",
-  //         });
-  //       } catch (err) {
-  //         console.error("Error creating user", err);
-  //       }
-  //     }
-  //   };
-
-  //   tryCreateUser();
-  // }, [user]);
 
   // useEffect(() => {
   //   if (user) {
@@ -204,7 +158,7 @@ const CreateScreen = () => {
                 styles.shareButton,
                 isSharing && styles.shareButtonDisabled,
               ]}
-              disabled={isSharing || !selectedImage}
+              disabled={isSharing || !selectedImage || !userIdReady}
               onPress={handleShare}
             >
               {isSharing ? (
